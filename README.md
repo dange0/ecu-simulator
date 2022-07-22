@@ -44,7 +44,7 @@ In both cases, only ISO-TP **normal addressing** (only CAN arbitration ID is use
 * [SocketCAN](https://www.kernel.org/doc/Documentation/networking/can.txt) Implementation of the CAN protocol. This kernel module is part of Linux. 
 * [ISO-TP kernel module](https://github.com/hartkopp/can-isotp) It is NOT part of linux. It needs to be loaded before running the `ecu-simulator`. See `isotp_ko_file_path` in `ecu_config.json`.
 * [isotp](https://can-isotp.readthedocs.io/en/latest/) The `ecu-simulator` only uses [isotp.socket](https://can-isotp.readthedocs.io/en/latest/isotp/socket.html), which is a wrapper for the ISO-TP kernel module.
-* [python-can](https://python-can.readthedocs.io/en/master/installation.html) The `ecu-simulator` uses this library to log CAN messages (see `loggers\logger_can.py`). **Note**: The bus type `socketcan_native` is used.  
+* [python-can](https://python-can.readthedocs.io/en/master/installation.html) The `ecu-simulator` uses this library to log CAN messages (see `loggers\logger_can.py`). **Note**: The bus type `socketcan` is used.  
 
 ## Usage 
 
