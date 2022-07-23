@@ -8,7 +8,7 @@ DATE_FORMAT = "%Y-%m-%dT%H:%M:%S"
 
 LOGGER_FORMAT = "%(asctime)s.%(msecs)03d - %(name)s - %(levelname)s - %(message)s"
 
-LOG_FILE_NAME = LOGGER_NAME + ".log"
+LOG_FILE_NAME = "log/" +LOGGER_NAME + ".log"
 
 logger = logging.getLogger(LOGGER_NAME)
 
