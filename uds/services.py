@@ -30,6 +30,8 @@ NRC_SUB_FUNCTION_NOT_SUPPORTED = 0x12
 
 NRC_INCORRECT_MESSAGE_LENGTH_OR_INVALID_FORMAT = 0x13
 
+REQUEST_DOWNLOAD_SID = 0x34
+
 REQUEST_UPLOAD_SID = 0x35
 
 NRC_REQUEST_OUT_OF_RANGE = 0x31
@@ -41,6 +43,7 @@ SERVICES = [
     {"id": ECU_RESET_SID, "description": "ECUReset", "response": lambda request: get_0x11_response(request)},
     {"id": READ_DTC_INFO_SID, "description": "ReadDTCInformation", "response": lambda request: get_0x19_response(request)},
     {"id": DIAGNOSTIC_SESSION_CONTROL_SID, "description": "DiagnosticSessionControl", "response": lambda request: get_0x10_response(request)},
+    {"id": REQUEST_DOWNLOAD_SID, "description": "RequestDownload", "response": lambda request: get_0x34_response(request)},
     {"id": REQUEST_UPLOAD_SID, "description": "RequestUpload", "response": lambda request: get_0x35_response(request)},
 ]
 
@@ -94,6 +97,8 @@ def get_0x19_response(request):
         return get_negative_response(READ_DTC_INFO_SID, NRC_SUB_FUNCTION_NOT_SUPPORTED)
     return get_negative_response(READ_DTC_INFO_SID, NRC_INCORRECT_MESSAGE_LENGTH_OR_INVALID_FORMAT)
 
+def get_0x34_response(request):
+    return get_negative_response(REQUEST_DOWNLOAD_SID, NRC_SECURITY_ACCESS_DENIED)
 
 def get_0x35_response(request):
     if len(request) >= 3:
