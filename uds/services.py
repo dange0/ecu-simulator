@@ -30,12 +30,23 @@ NRC_SUB_FUNCTION_NOT_SUPPORTED = 0x12
 
 NRC_INCORRECT_MESSAGE_LENGTH_OR_INVALID_FORMAT = 0x13
 
+REQUEST_UPLOAD_SID = 0x35
+
+NRC_REQUEST_OUT_OF_RANGE = 0x31
+
+NRC_SECURITY_ACCESS_DENIED = 0x33
+
 
 SERVICES = [
     {"id": ECU_RESET_SID, "description": "ECUReset", "response": lambda request: get_0x11_response(request)},
     {"id": READ_DTC_INFO_SID, "description": "ReadDTCInformation", "response": lambda request: get_0x19_response(request)},
-    {"id": DIAGNOSTIC_SESSION_CONTROL_SID, "description": "DiagnosticSessionControl", "response": lambda request: get_0x10_response(request)}
+    {"id": DIAGNOSTIC_SESSION_CONTROL_SID, "description": "DiagnosticSessionControl", "response": lambda request: get_0x10_response(request)},
+    {"id": REQUEST_UPLOAD_SID, "description": "RequestUpload", "response": lambda request: get_0x35_response(request)},
 ]
+
+
+with open("img/surprised-pikachu.gif", "rb") as f:
+    IMAGE = f.read()
 
 
 def process_service_request(request):
@@ -82,6 +93,31 @@ def get_0x19_response(request):
             return add_dtcs_to_response(positive_response)
         return get_negative_response(READ_DTC_INFO_SID, NRC_SUB_FUNCTION_NOT_SUPPORTED)
     return get_negative_response(READ_DTC_INFO_SID, NRC_INCORRECT_MESSAGE_LENGTH_OR_INVALID_FORMAT)
+
+
+def get_0x35_response(request):
+    if len(request) >= 3:
+        dataFormatIdentifier = request[1]
+        addressAndLengthFormatIdentifier = request[2]
+        print("dataFormatIdentifier", dataFormatIdentifier)
+        print("addressAndLengthFormatIdentifier", addressAndLengthFormatIdentifier)
+        memorySizeLen = (addressAndLengthFormatIdentifier & 0xf0) >> 4
+        memoryAddressLen = addressAndLengthFormatIdentifier & 0xf
+        print("memorySizeLen", memorySizeLen)
+        print("memoryAddressLen", memoryAddressLen)
+        memoryAddress = int.from_bytes(request[3:3+memoryAddressLen],"big")
+        memorySize = int.from_bytes(request[3+memoryAddressLen:3+memoryAddressLen+memorySizeLen],"big")
+        print("memoryAddress", memoryAddress) 
+        print("memorySize", memorySize)
+        if memorySize <= len(IMAGE):
+            respone_img = IMAGE[memoryAddress:memoryAddress+memorySize]
+            maxNumberOfBlockLengt = (len(respone_img)).to_bytes(1, byteorder='big')
+            maxNumberOfBlockLengthLen = len(maxNumberOfBlockLengt)
+            if maxNumberOfBlockLengthLen <= 0xf:
+                lengthFormatIdentifier = (maxNumberOfBlockLengthLen << 4).to_bytes(1, byteorder='big')
+                return b'\x75' + lengthFormatIdentifier + maxNumberOfBlockLengt + respone_img
+        return get_negative_response(REQUEST_UPLOAD_SID, NRC_REQUEST_OUT_OF_RANGE)
+    return get_negative_response(REQUEST_UPLOAD_SID, NRC_INCORRECT_MESSAGE_LENGTH_OR_INVALID_FORMAT)
 
 
 def is_reset_type_supported(reset_type):
