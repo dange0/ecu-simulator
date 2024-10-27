@@ -1,6 +1,6 @@
 {
   "vin": {
-    "value": "TESTVIN0123456789",
+    "value": "DANGE_VIN_0001",
     "description": "Vehicle Identification Number. Max 17 characters"
   },
   "ecu_name": {
@@ -16,7 +16,10 @@
     "description": "Fuel type (e.g., 1=Gasoline). See https://en.wikipedia.org/wiki/OBD-II_PIDs#Fuel_Type_Coding"
   },
   "dtcs": {
-    "value": ["B1477", "P0001"],
+    "value": [
+      "B1477",
+      "P0001"
+    ],
     "description": "List of Diagnostic Trouble Codes. The list can contain Max 255 DTCs"
   },
   "obd_broadcast_address": {
@@ -44,7 +47,7 @@
     "description": "CAN bitrate (refer to the specification of your CAN hardware). Only applicable for can_interface_type: hardware"
   },
   "isotp_ko_file_path": {
-    "value": "/usr/lib/modules/5.3.0-kali2-amd64/kernel/net/can/can-isotp.ko",
+    "value": "/usr/lib/modules/5.15.0-41-generic/kernel/net/can/can-isotp.ko",
     "description": "File path of the ISO-TP Kernel module (see https://github.com/hartkopp/can-isotp)"
   }
 }
